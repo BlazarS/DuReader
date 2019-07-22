@@ -58,7 +58,7 @@ def parse_args():
     parser.add_argument('--max_q_len', type=int, default=60)
     parser.add_argument('--doc_num', type=int, default=5)
 
-    parser.add_argument('--vocab_dir', default='../data/vocab', help='vocabulary')
+    parser.add_argument('--vocab_dir', default='../data/vocab/', help='vocabulary')
     parser.add_argument("--save_dir", type=str, default="../data/models",
                         help="Specify the path to save trained models.")
     parser.add_argument("--save_interval", type=int, default=1,

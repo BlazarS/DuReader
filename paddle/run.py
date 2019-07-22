@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 #   Copyright (c) 2018 PaddlePaddle Authors. All Rights Reserve.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -240,6 +241,7 @@ def validation(inference_program, avg_cost, s_probs, e_probs, match, feed_order,
             feed=list(val_feeder.feed_parallel(feed_data, dev_count)),
             fetch_list=[avg_cost.name, s_probs.name, e_probs.name, match.name],
             return_numpy=False)
+            #return_numpy=True)
         total_loss += np.array(val_fetch_outs[0]).sum()
         start_probs_m = LodTensor_Array(val_fetch_outs[1])
         end_probs_m = LodTensor_Array(val_fetch_outs[2])
@@ -340,7 +342,7 @@ def train(logger, args):
         logger.info('vocab size is {} and embed dim is {}'.format(vocab.size(
         ), vocab.embed_dim))
     brc_data = BRCDataset(args.max_p_num, args.max_p_len, args.max_q_len,
-                          args.trainset, args.devset)
+                          args.trainset, args.devset)#brc_data
     logger.info('Converting text into ids...')
     brc_data.convert_to_ids(vocab)
     logger.info('Initialize the model...')
@@ -351,7 +353,7 @@ def train(logger, args):
     else:
         place = fluid.CUDAPlace(0)
         dev_count = fluid.core.get_cuda_device_count()
-
+    
     # build model
     main_program = fluid.Program()
     startup_prog = fluid.Program()
@@ -386,7 +388,7 @@ def train(logger, args):
                 optimizer.minimize(obj_func)
 
             # initialize parameters
-            place = core.CUDAPlace(0) if args.use_gpu else core.CPUPlace()
+            place = core.CUDAPlace() if args.use_gpu else core.CPUPlace()
             exe = Executor(place)
             if args.load_dir:
                 logger.info('load from {}'.format(args.load_dir))
@@ -411,18 +413,29 @@ def train(logger, args):
                 use_cuda=bool(args.use_gpu),
                 loss_name=avg_cost.name)
             print_para(main_program, parallel_executor, logger, args)
-
+            
             for pass_id in range(1, args.pass_num + 1):
                 pass_start_time = time.time()
                 pad_id = vocab.get_id(vocab.pad_token)
-                if args.enable_ce:
+                if args.enable_ce:#这里是关键   train_reader初始化
                     train_reader = lambda:brc_data.gen_mini_batches('train', args.batch_size, pad_id, shuffle=False)
                 else:
                     train_reader = lambda:brc_data.gen_mini_batches('train', args.batch_size, pad_id, shuffle=True)
+                # print(train_reader()) #自行添加
                 train_reader = read_multiple(train_reader, dev_count)
+                #print(train_reader()) #自行添加
                 log_every_n_batch, n_batch_loss = args.log_interval, 0
-                total_num, total_loss = 0, 0
+                total_num, total_loss = 0, 0 #total_num初始化
+                #logger.info('初始化total_num和total_loss,均为0')
+                # for batch_list in train_reader():
+                #     print('batch_list:',batch_list)
+                # if(train_reader() is None):
+                #     print('train_reader() is None')
+                # else:
+                #     print('train_reader() is not None')
                 for batch_id, batch_list in enumerate(train_reader(), 1):
+                    #logger.info('可能这里不运行')
+                    
                     feed_data = batch_reader(batch_list, args)
                     fetch_outs = parallel_executor.run(
                         feed=list(feeder.feed_parallel(feed_data, dev_count)),
@@ -430,6 +443,7 @@ def train(logger, args):
                         return_numpy=False)
                     cost_train = np.array(fetch_outs[0]).mean()
                     total_num += args.batch_size * dev_count
+                    print('initial total_num =%s'%total_num)  #自行添加
                     n_batch_loss += cost_train
                     total_loss += cost_train * args.batch_size * dev_count
 
@@ -466,7 +480,7 @@ def train(logger, args):
                 else:
                     logger.warning(
                         'No dev set is loaded for evaluation in the dataset!')
-
+                logger.info('total_num = %s'%total_num)
                 logger.info('Average train loss for epoch {} is {}'.format(
                     pass_id, "%.10f" % (1.0 * total_loss / total_num)))
 
