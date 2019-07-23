@@ -105,9 +105,11 @@ def read_multiple(reader, count, clip_last=True):
         res = []
         for item in reader():
             res.append(item)
+            print('发生了什么事情')
             if len(res) == count:
                 yield res
                 res = []
+                
         if len(res) == count:
             yield res
         elif not clip_last:
@@ -246,7 +248,7 @@ def validation(inference_program, avg_cost, s_probs, e_probs, match, feed_order,
         start_probs_m = LodTensor_Array(val_fetch_outs[1])
         end_probs_m = LodTensor_Array(val_fetch_outs[2])
         match_lod = val_fetch_outs[3].lod()
-        count += len(np.array(val_fetch_outs[0]))
+        count += len(np.array(val_fetch_outs[0]))+1
 
         n_batch_cnt += len(np.array(val_fetch_outs[0]))
         n_batch_loss += np.array(val_fetch_outs[0]).sum()
@@ -426,13 +428,9 @@ def train(logger, args):
                 #print(train_reader()) #自行添加
                 log_every_n_batch, n_batch_loss = args.log_interval, 0
                 total_num, total_loss = 0, 0 #total_num初始化
-                #logger.info('初始化total_num和total_loss,均为0')
-                # for batch_list in train_reader():
-                #     print('batch_list:',batch_list)
-                # if(train_reader() is None):
-                #     print('train_reader() is None')
-                # else:
-                #     print('train_reader() is not None')
+                for list in train_reader():
+                    print('list为')
+                    print(list)
                 for batch_id, batch_list in enumerate(train_reader(), 1):
                     #logger.info('可能这里不运行')
                     
