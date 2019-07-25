@@ -239,7 +239,6 @@ class BRCDataset(object):
         indices = np.arange(data_size)  
         if shuffle:
             np.random.shuffle(indices)  
-        print '开玩笑'  
         for batch_start in np.arange(0, data_size, batch_size):
             batch_indices = indices[batch_start:batch_start + batch_size]
             yield self._one_mini_batch(data, batch_indices, pad_id)
