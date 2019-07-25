@@ -422,17 +422,10 @@ def train(logger, args):
                     train_reader = lambda:brc_data.gen_mini_batches('train', args.batch_size, pad_id, shuffle=False)
                 else:
                     train_reader = lambda:brc_data.gen_mini_batches('train', args.batch_size, pad_id, shuffle=True)
-                # print(train_reader()) #自行添加
                 train_reader = read_multiple(train_reader, dev_count)
-                #print(train_reader()) #自行添加
                 log_every_n_batch, n_batch_loss = args.log_interval, 0
                 total_num, total_loss = 0, 0 #total_num初始化
-                for list in train_reader():
-                    print('list为')
-                    print(list)
                 for batch_id, batch_list in enumerate(train_reader(), 1):
-                    #logger.info('可能这里不运行')
-                    
                     feed_data = batch_reader(batch_list, args)
                     fetch_outs = parallel_executor.run(
                         feed=list(feeder.feed_parallel(feed_data, dev_count)),
@@ -440,7 +433,6 @@ def train(logger, args):
                         return_numpy=False)
                     cost_train = np.array(fetch_outs[0]).mean()
                     total_num += args.batch_size * dev_count
-                    print('initial total_num =%s'%total_num)  #自行添加
                     n_batch_loss += cost_train
                     total_loss += cost_train * args.batch_size * dev_count
 
