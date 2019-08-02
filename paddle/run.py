@@ -14,9 +14,22 @@
 # limitations under the License.
 
 from __future__ import absolute_import
+'''
+引入绝对导入方式：指明顶层 package 名。
+ 比如import a，Python 会在 sys.path里寻找所有名为 a 的顶层模块。
+'''
 from __future__ import division
+'''
+导入python未支持的语言特征division(精确除法)，
+当我们没有在程序中导入该特征时，"/"操作符执行的是截断除法(Truncating Division),
+当我们导入精确除法之后，"/"执行的是精确除法
+'''                         
 from __future__ import print_function
-
+'''
+在开头加上from __future__ import print_function这句之后，
+即使在python2.X，使用print就得像python3.X那样加括号使用。
+python2.X中print不需要括号，而在python3.X中则需要。
+'''
 import numpy as np
 import time
 import os
@@ -35,7 +48,6 @@ import sys
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
-sys.path.append('..')
 
 from args import *
 import rc_model
@@ -46,7 +58,7 @@ from utils import normalize
 from utils import compute_bleu_rouge
 from vocab import Vocab
 
-
+#准备输入数据
 def prepare_batch_input(insts, args):
     batch_size = len(insts['raw_data'])
     inst_num = len(insts['passage_num'])
