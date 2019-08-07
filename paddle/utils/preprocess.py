@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 ###############################################################################
 # ==============================================================================
 # Copyright 2017 Baidu.com, Inc. All Rights Reserved
@@ -17,11 +18,12 @@
 """
 This module finds the most related paragraph of each document according to recall.
 """
+#预处理数据，将段落文字分成一个一个的词组，并且只存储与问题最相关的回答
 
 import sys
 if sys.version[0] == '2':
     reload(sys)
-    sys.setdefaultencoding("utf-8")
+    sys.setdefaultencoding("utf-8")         #设置编码方式为utf-8
 import json
 from collections import Counter
 
@@ -152,10 +154,10 @@ def find_fake_answer(sample):
         None
     """
     for doc in sample['documents']:
-        most_related_para = -1
-        most_related_para_len = 999999
-        max_related_score = 0
-        for p_idx, para_tokens in enumerate(doc['segmented_paragraphs']):
+        most_related_para = -1      #最相关的段落初始为-1
+        most_related_para_len = 999999      #最相关段落的长度初始为999999
+        max_related_score = 0       #最相关的段落的分数为0
+        for p_idx, para_tokens in enumerate(doc['segmented_paragraphs']):   
             if len(sample['segmented_answers']) > 0:
                 related_score = metric_max_over_ground_truths(recall,
                                                               para_tokens,
@@ -170,6 +172,7 @@ def find_fake_answer(sample):
                 max_related_score = related_score
         doc['most_related_para'] = most_related_para
 
+    #新建了一个answer_docs键值对,新建了一个answer_span键值对，新建了一个fake_answers键值对，新建了一个match_scores键值对
     sample['answer_docs'] = []
     sample['answer_spans'] = []
     sample['fake_answers'] = []
@@ -178,7 +181,7 @@ def find_fake_answer(sample):
     best_match_score = 0
     best_match_d_idx, best_match_span = -1, [-1, -1]
     best_fake_answer = None
-    answer_tokens = set()
+    answer_tokens = set()       #创建一个无序不重复元素集
     for segmented_answer in sample['segmented_answers']:
         answer_tokens = answer_tokens | set([token for token in segmented_answer])
     for d_idx, doc in enumerate(sample['documents']):
@@ -213,6 +216,8 @@ def find_fake_answer(sample):
 
 if __name__ == '__main__':
     for line in sys.stdin:
+        #sys.stdin的作用是从标准输入中读取数据，标准输入就是从键盘输入的数据。
         sample = json.loads(line)
+        #json.loads的作用是将已编码的JSON字符串解码为Python对象
         find_fake_answer(sample)
         print(json.dumps(sample, encoding='utf8', ensure_ascii=False))
