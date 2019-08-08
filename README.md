@@ -39,18 +39,18 @@ cd utils && bash download_thirdparty.sh
 ### Preprocess the Data 预处理数据  
 After the dataset is downloaded, there is still some work to do to run the baseline systems. DuReader dataset offers rich amount of documents for every user question, the documents are too long for popular RC models to cope with. In our baseline models, we preprocess the train set and development set data by selecting the paragraph that is most related to the answer string, while for inferring(no available golden answer), we select the paragraph that is most related to the question string. The preprocessing strategy is implemented in `utils/preprocess.py`. To preprocess the raw data, you should first segment 'question', 'title', 'paragraphs' and then store the segemented result into 'segmented_question', 'segmented_title', 'segmented_paragraphs' like the downloaded preprocessed data, then run:  
 下载数据集之后，仍然要做一些准备工作才能运行基线系统。DuReader数据集为每个用户的问题提供了丰富的documents，但是这些documents过长，对流行的
-RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**'utils/preprocess.py'**实现。为了预处理原始数据，你应该先切割**'question'**、**'title'**、**'paragraphs'**字符串，并把切割后的结果存储在**'segemented_question'**、**'segemented_title'**、**'segemented_paragraphs'**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
+RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**utils/preprocess.py**实现。为了预处理原始数据，你应该先切割**question**、**title**、**paragraphs**字符串，并把切割后的结果存储在**segemented_question**、**segemented_title**、**segemented_paragraphs**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
 
 ```
 cat data/raw/trainset/search.train.json | python utils/preprocess.py > data/preprocessed/trainset/search.train.json
 ```
 The preprocessed data can be automatically downloaded by `data/download.sh`, and is stored in `data/preprocessed`, the raw data before preprocessing is under `data/raw`.  
-已经预处理的数据可以通过**'data/download.sh'**自动下载，它会被存储到**'data/preprocessed'**这个文件夹中，原始数据（未处理的数据）存储在**'data/raw'**文件夹中。  
+已经预处理的数据可以通过**data/download.sh**自动下载，它会被存储到**data/preprocessed**这个文件夹中，原始数据（未处理的数据）存储在**data/raw**文件夹中。  
 
 ### Run PaddlePaddle 运行PaddlePaddle  
 
 We implement a BiDAF model with PaddlePaddle. Note that we have an update on the PaddlePaddle baseline (Feb 25, 2019). The major updates have been noted in `paddle/UPDATES.md`. On the dataset of DuReader, the PaddlePaddle baseline has better performance than our Tensorflow baseline. 
-我们使用PaddlePaddle框架实现一个BiDAF模型。请注意，基于PaddlePaddle框架的基线模型已经在2019年2月25号进行了更新。主要的更新可以在**'paddle/UPDATES.md'**中看到。基于DuReader数据集，PaddlePaddle基线模型比TensorFlow基线模型有更好的表现。在PaddlePaddle基线中也支持多gpu训练。  
+我们使用PaddlePaddle框架实现一个BiDAF模型。请注意，基于PaddlePaddle框架的基线模型已经在2019年2月25号进行了更新。主要的更新可以在**paddle/UPDATES.md**中看到。基于DuReader数据集，PaddlePaddle基线模型比TensorFlow基线模型有更好的表现。在PaddlePaddle基线中也支持多gpu训练。  
 The PaddlePaddle baseline includes the following procedures: paragraph extraction, vocabulary preparation, training, evaluation and inference. All these procedures have been wrapped in `paddle/run.sh`. You can start one procedure by running run.sh with specific arguments. The basic usage is:  
 PaddlePaddle基线包括以下的过程：段落提取（paragraph extraction）、词汇准备（vocabulary preparation），训练（training）,评估（evaluation）和推理（inference）。所有这些过程都包装在*'paddle/run.sh'*中。您可以通过运行具有特定参数run.sh来启动一个过程。基本用法是：  
 
@@ -62,7 +62,7 @@ PROCESS_NAME can be one of `para_extraction`, `prepare`, `train`, `evaluate` and
 PROCESS_NAME可以是'para_extraction'、 'prepare'、'train'、'evaluate'、'predict'中的任何一个(看下方的各个过程的具体描述)。OTHER_ARGS是特定的参数，这些可以在*'paddle/args.py'*中找到。  
 
 In the examples below (except for 'Paragraph Extraction'), we use the demo dataset (under `data/demo`) by default to demonstrate the usages of `paddle/run.sh`.   
-在下方的例子中（不包括'Paragraph Extraction'），我们默认用了demo数据集（在'data/demo'数据集下）来演示*'paddlepaddle/run.sh'*的用法。  
+在下方的例子中（不包括'Paragraph Extraction'），我们默认用了demo数据集（在'data/demo'数据集下）来演示*paddlepaddle/run.sh*的用法。  
 
 #### Environment Requirements 环境要求  
 Please note that we only tested the baseline on PaddlePaddle v1.2 (Fluid) with Python 2.7.13. To install PaddlePaddle, please see [PaddlePaddle Homepage](http://paddlepaddle.org) for more information.
@@ -70,14 +70,14 @@ Please note that we only tested the baseline on PaddlePaddle v1.2 (Fluid) with P
 
 #### Paragraph Extraction 段落提取  
 We incorporate a new strategy of paragraph extraction to improve the model performance. The details have been noted in `paddle/UPDATES.md`. Please run the following command to apply the new strategy of paragraph extraction on each document:
-我们采用了段落提取的新策略，以提高模型性能。详情已在**'paddle/UPDATES.md'**中注明。请运行以下命令，以便在每个文档上应用段落提取的新策略：  
+我们采用了段落提取的新策略，以提高模型性能。详情已在**paddle/UPDATES.md**中注明。请运行以下命令，以便在每个文档上应用段落提取的新策略：  
 
 ```
 sh run.sh --para_extraction
 ```
 
 Note that the full preprocessed dataset should be ready before running this command (see the "Preprocess the Data" section above). The results of paragraph extraction will be saved in `data/extracted/`. This procedure is only required before running the full dataset, if you just want to try vocabulary preparation/training/evaluating/inference with demo data, you can sikp this one.  
-请注意，在运行这条命令之前，完整的预处理数据集应准备就绪。（看上方"PreProcess the Data"部分）。段落提取的结果会保存在*'data/extracted/'*文件夹中。这个过程仅在运行完整数据集之前是必须的，如果你只想尝试使用demo数据进行词汇词汇准备/训练/评估/推理，你可以跳过这一部分。  
+请注意，在运行这条命令之前，完整的预处理数据集应准备就绪。（看上方"PreProcess the Data"部分）。段落提取的结果会保存在*data/extracted/*文件夹中。这个过程仅在运行完整数据集之前是必须的，如果你只想尝试使用demo数据进行词汇词汇准备/训练/评估/推理，你可以跳过这一部分。  
 
 #### Vocabulary Preparation 词汇准备  
 
@@ -101,7 +101,7 @@ To train a model (on the demo trainset), please run the following command:
 sh run.sh --train --pass_num 5
 ```
 This will start the training process with 5 epochs. The trained model will be evaluated automatically after each epoch, and a folder named by the epoch ID will be created under the folder `data/models`, in which the model parameters are saved. If you need to change the default hyper-parameters, e.g. initial learning rate and hidden size, please run the commands with the specific arguments.   
-这个命令会执行5次训练过程。每次训练完成之后将自动评估定型模型，并在保存模型参数的文件夹*'data/model'*下创建由epoch ID命令的文件夹。如果需要更改默认超参数(例如初始学习速率和隐藏大小),请使用特定参数运行命令。  
+这个命令会执行5次训练过程。每次训练完成之后将自动评估定型模型，并在保存模型参数的文件夹*data/model*下创建由epoch ID命令的文件夹。如果需要更改默认超参数(例如初始学习速率和隐藏大小),请使用特定参数运行命令。  
 ```
 sh run.sh --train --pass_num 5 --learning_rate 0.00001 --hidden_size 100
 ```
@@ -116,7 +116,7 @@ To evaluate a specific model (on the demo devset), please run the following comm
 sh run.sh --evaluate  --load_dir YOUR_MODEL_DIR
 ```
 The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and evaluated.  
-在**'YOUR_MODEL_DIR'**（例如/data/models/1）下的模型将会加载和评估。  
+在**YOUR_MODEL_DIR**（例如/data/models/1）下的模型将会加载和评估。  
 
 #### Inference (Prediction) 推理（预测）
 To do inference (on the demo testset) by using a trained model, please run: 
@@ -125,13 +125,12 @@ To do inference (on the demo testset) by using a trained model, please run:
 sh run.sh --predict  --load_dir YOUR_MODEL_DIR 
 ```
 The predicted answers will be saved in the folder `data/results`.
-推理的答案将会保存在文件夹**'data/results'**下。  
+推理的答案将会保存在文件夹**data/results**下。  
 #### The performance of PaddlePaddle Baseline on DuReader 2.0 在DuReader 2.0上PaddlePaddle基线系统的表现  
 |      Model     | Dev ROUGE-L | Test ROUGE-L |
 | :------------- | :---------: | :----------: |
 | before update  |    39.29    |     45.90    |
 | after update   |    47.68    |     54.66    |
-
 
 The results in the above table are obtained by using 4 P40 GPU cards with batch size = 4*32. If using a single card with a smaller batch size (e.g. 32), the performance might be slightly lower, but should be higher than ROUGE-L=47 on the devset.   
 上表中的结果是使用 4 个批处理大小 = 4*32 的 P40 GPU 卡获得的。如果使用批处理大小较小的一张卡(例如 32),性能可能略低,但应高于 devset 上的 ROUGE-L_47。  
