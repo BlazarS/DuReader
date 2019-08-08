@@ -39,18 +39,18 @@ cd utils && bash download_thirdparty.sh
 ### Preprocess the Data 预处理数据  
 After the dataset is downloaded, there is still some work to do to run the baseline systems. DuReader dataset offers rich amount of documents for every user question, the documents are too long for popular RC models to cope with. In our baseline models, we preprocess the train set and development set data by selecting the paragraph that is most related to the answer string, while for inferring(no available golden answer), we select the paragraph that is most related to the question string. The preprocessing strategy is implemented in `utils/preprocess.py`. To preprocess the raw data, you should first segment 'question', 'title', 'paragraphs' and then store the segemented result into 'segmented_question', 'segmented_title', 'segmented_paragraphs' like the downloaded preprocessed data, then run:  
 下载数据集之后，仍然要做一些准备工作才能运行基线系统。DuReader数据集为每个用户的问题提供了丰富的documents，但是这些documents过长，对流行的
-RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由*'utils/preprocess.py'*实现。为了预处理原始数据，你应该先切割*'question'*、*'title'*、*'paragraphs'*字符串，并把切割后的结果存储在*'segemented_question'*、*'segemented_title'*、*'segemented_paragraphs'*，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句：  
+RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**'utils/preprocess.py'**实现。为了预处理原始数据，你应该先切割**'question'**、**'title'**、**'paragraphs'**字符串，并把切割后的结果存储在**'segemented_question'**、**'segemented_title'**、**'segemented_paragraphs'**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
 
 ```
 cat data/raw/trainset/search.train.json | python utils/preprocess.py > data/preprocessed/trainset/search.train.json
 ```
 The preprocessed data can be automatically downloaded by `data/download.sh`, and is stored in `data/preprocessed`, the raw data before preprocessing is under `data/raw`.  
-已经预处理的数据可以通过*'data/download.sh'*自动下载，它会被存储到*'data/preprocessed'*这个文件夹中，原始数据（未处理的数据）存储在*'data/raw'*文件夹中。  
+已经预处理的数据可以通过**'data/download.sh'**自动下载，它会被存储到**'data/preprocessed'**这个文件夹中，原始数据（未处理的数据）存储在**'data/raw'**文件夹中。  
 
 ### Run PaddlePaddle 运行PaddlePaddle  
 
 We implement a BiDAF model with PaddlePaddle. Note that we have an update on the PaddlePaddle baseline (Feb 25, 2019). The major updates have been noted in `paddle/UPDATES.md`. On the dataset of DuReader, the PaddlePaddle baseline has better performance than our Tensorflow baseline. 
-我们使用PaddlePaddle框架实现一个BiDAF模型。请注意，基于PaddlePaddle框架的基线模型已经在2019年2月25号进行了更新。主要的更新可以在*'paddle/UPDATES.md'*中看到。基于DuReader数据集，PaddlePaddle基线模型比TensorFlow基线模型有更好的表现。在PaddlePaddle基线中也支持多gpu训练。  
+我们使用PaddlePaddle框架实现一个BiDAF模型。请注意，基于PaddlePaddle框架的基线模型已经在2019年2月25号进行了更新。主要的更新可以在**'paddle/UPDATES.md'**中看到。基于DuReader数据集，PaddlePaddle基线模型比TensorFlow基线模型有更好的表现。在PaddlePaddle基线中也支持多gpu训练。  
 The PaddlePaddle baseline includes the following procedures: paragraph extraction, vocabulary preparation, training, evaluation and inference. All these procedures have been wrapped in `paddle/run.sh`. You can start one procedure by running run.sh with specific arguments. The basic usage is:  
 PaddlePaddle基线包括以下的过程：段落提取（paragraph extraction）、词汇准备（vocabulary preparation），训练（training）,评估（evaluation）和推理（inference）。所有这些过程都包装在*'paddle/run.sh'*中。您可以通过运行具有特定参数run.sh来启动一个过程。基本用法是：  
 
@@ -70,13 +70,15 @@ Please note that we only tested the baseline on PaddlePaddle v1.2 (Fluid) with P
 
 #### Paragraph Extraction 段落提取  
 We incorporate a new strategy of paragraph extraction to improve the model performance. The details have been noted in `paddle/UPDATES.md`. Please run the following command to apply the new strategy of paragraph extraction on each document:
-我们采用了段落提取的新策略，以提高模型性能。详情已在*'paddle/UPDATES.md'*中注明。请运行以下命令，以便在每个文档上应用段落提取的新策略：  
+我们采用了段落提取的新策略，以提高模型性能。详情已在**'paddle/UPDATES.md'**中注明。请运行以下命令，以便在每个文档上应用段落提取的新策略：  
+
 ```
 sh run.sh --para_extraction
 ```
 
 Note that the full preprocessed dataset should be ready before running this command (see the "Preprocess the Data" section above). The results of paragraph extraction will be saved in `data/extracted/`. This procedure is only required before running the full dataset, if you just want to try vocabulary preparation/training/evaluating/inference with demo data, you can sikp this one.  
 请注意，在运行这条命令之前，完整的预处理数据集应准备就绪。（看上方"PreProcess the Data"部分）。段落提取的结果会保存在*'data/extracted/'*文件夹中。这个过程仅在运行完整数据集之前是必须的，如果你只想尝试使用demo数据进行词汇词汇准备/训练/评估/推理，你可以跳过这一部分。  
+
 #### Vocabulary Preparation 词汇准备  
 
 Before training the model, you need to prepare the vocabulary for the dataset and create the folders that will be used for storing the models and the results. You can run the following command for the preparation:
@@ -115,6 +117,7 @@ sh run.sh --evaluate  --load_dir YOUR_MODEL_DIR
 ```
 The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and evaluated.  
 在**'YOUR_MODEL_DIR'**（例如/data/models/1）下的模型将会加载和评估。  
+
 #### Inference (Prediction) 推理（预测）
 To do inference (on the demo testset) by using a trained model, please run: 
 要用已经训练好的模型进行推理，请运行以下命令：  
