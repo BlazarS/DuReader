@@ -96,46 +96,47 @@ The above command uses the data in `data/demo/` by default. To change the data f
 sh run.sh --prepare --trainset ../data/extracted/trainset/zhidao.train.json ../data/extracted/trainset/search.train.json --devset ../data/extracted/devset/zhidao.dev.json ../data/extracted/devset/search.dev.json --testset ../data/extracted/testset/zhidao.test.json ../data/extracted/testset/search.test.json
 ```
 
-#### Training
+#### Training 训练  
 
 To train a model (on the demo trainset), please run the following command:
-
+为了训练模型（在demo数据集上），请运行以下的命令：  
 ```
 sh run.sh --train --pass_num 5
 ```
-This will start the training process with 5 epochs. The trained model will be evaluated automatically after each epoch, and a folder named by the epoch ID will be created under the folder `data/models`, in which the model parameters are saved. If you need to change the default hyper-parameters, e.g. initial learning rate and hidden size, please run the commands with the specific arguments. 
-
+This will start the training process with 5 epochs. The trained model will be evaluated automatically after each epoch, and a folder named by the epoch ID will be created under the folder `data/models`, in which the model parameters are saved. If you need to change the default hyper-parameters, e.g. initial learning rate and hidden size, please run the commands with the specific arguments.   
+这个命令会执行5次训练过程。每次训练完成之后将自动评估定型模型，并在保存模型参数的文件夹*'data/model'*下创建由epoch ID命令的文件夹。如果需要更改默认超参数(例如初始学习速率和隐藏大小),请使用特定参数运行命令。  
 ```
 sh run.sh --train --pass_num 5 --learning_rate 0.00001 --hidden_size 100
 ```
 
-More arguments can be found in `paddle/args.py`.
+More arguments can be found in `paddle/args.py`.  
+更多参数可以在*'paddle/args.py'*中找到。  
 
-
-#### Evaluate
+#### Evaluate 评估  
 To evaluate a specific model (on the demo devset), please run the following command:
-
+要评估特定模型（在demo数据集上），请运行下列命令：  
 ```
 sh run.sh --evaluate  --load_dir YOUR_MODEL_DIR
 ```
-The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and evaluated.
-
-#### Inference (Prediction)
+The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and evaluated.  
+在**'YOUR_MODEL_DIR'**（例如/data/models/1）下的模型将会加载和评估。  
+#### Inference (Prediction) 推理（预测）
 To do inference (on the demo testset) by using a trained model, please run: 
-
+要用已经训练好的模型进行推理，请运行以下命令：  
 ```
 sh run.sh --predict  --load_dir YOUR_MODEL_DIR 
 ```
 The predicted answers will be saved in the folder `data/results`.
-
-#### The performance of PaddlePaddle Baseline on DuReader 2.0
+推理的答案将会保存在文件夹**'data/results'**下。  
+#### The performance of PaddlePaddle Baseline on DuReader 2.0 在DuReader 2.0上PaddlePaddle基线系统的表现  
 |      Model     | Dev ROUGE-L | Test ROUGE-L |
 | :------------- | :---------: | :----------: |
 | before update  |    39.29    |     45.90    |
 | after update   |    47.68    |     54.66    |
 
-The results in the above table are obtained by using 4 P40 GPU cards with batch size = 4*32. If using a single card with a smaller batch size (e.g. 32), the performance might be slightly lower, but should be higher than ROUGE-L=47 on the devset. 
 
+The results in the above table are obtained by using 4 P40 GPU cards with batch size = 4*32. If using a single card with a smaller batch size (e.g. 32), the performance might be slightly lower, but should be higher than ROUGE-L=47 on the devset.   
+上表中的结果是使用 4 个批处理大小 = 4*32 的 P40 GPU 卡获得的。如果使用批处理大小较小的一张卡(例如 32),性能可能略低,但应高于 devset 上的 ROUGE-L_47。  
 **Note**: for convinience, we also provide the trained model parameters which can be used for inference directly. To reproduce the resutls in the table, please download the [model parameters and vocabulary files](https://nlpc-du.cdn.bcebos.com/reading/baidu-2019-mrc-paddle-baseline.tar
 ) first, and follow the steps in the "Paragraph Extraction", "Evaluate" and "Inference" section above. 
 
