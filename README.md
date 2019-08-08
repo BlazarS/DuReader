@@ -138,7 +138,7 @@ The predicted answers will be saved in the folder `data/results`.
 The results in the above table are obtained by using 4 P40 GPU cards with batch size = 4*32. If using a single card with a smaller batch size (e.g. 32), the performance might be slightly lower, but should be higher than ROUGE-L=47 on the devset.   
 上表中的结果是使用 4 个批处理大小 = 4*32 的 P40 GPU 卡获得的。如果使用批处理大小较小的一张卡(例如 32),性能可能略低,但应高于 devset 上的 ROUGE-L_47。  
 **Note**: for convinience, we also provide the trained model parameters which can be used for inference directly. To reproduce the resutls in the table, please download the [model parameters and vocabulary files](https://nlpc-du.cdn.bcebos.com/reading/baidu-2019-mrc-paddle-baseline.tar
-) first, and follow the steps in the "Paragraph Extraction", "Evaluate" and "Inference" section above. 
+) first, and follow the steps in the "Paragraph Extraction", "Evaluate" and "Inference" section above.    
 
 
 #### Submit the test results
