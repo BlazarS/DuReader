@@ -1,14 +1,13 @@
 # DuReader Dataset  
-[TOC]
 DuReader is a new large-scale real-world and human sourced MRC dataset in Chinese. DuReader focuses on real-world open-domain question answering. The advantages of DuReader over existing datasets are concluded as follows:  
 DuReader 是中文中新的大型真实世界和人工来源 MRC 数据集。DuReader 专注于现实世界的开放问题解答。DuReader 相对于现有数据集的优势总结如下:  
 
  - Real question  
- - 真实的问题
+ - 真实的问题  
  - Real article  
  - 真实的文章  
  - Real answer  
- - 真实的回答
+ - 真实的回答  
  - Real application scenario  
  - 实际应用程序方案  
  - Rich annotation  
@@ -18,10 +17,8 @@ DuReader 是中文中新的大型真实世界和人工来源 MRC 数据集。DuR
 DuReader system implements 2 classic reading comprehension models([BiDAF](https://arxiv.org/abs/1611.01603) and [Match-LSTM](https://arxiv.org/abs/1608.07905)) on [DuReader dataset](https://ai.baidu.com//broad/subordinate?dataset=dureader). The system is implemented with 2 frameworks: [PaddlePaddle](http://paddlepaddle.org) and [TensorFlow](https://www.tensorflow.org).  
 DuReader系统在【DuReader数据集】的基础上实现了2个经典阅读理解模型【BiDAF】和【Match-LSTM】。该系统通过两个框架实现：Paddlepaddle和TensorFlow。  
 
-## How to Run  
-## 如何运行  
-### Download the Dataset  
-###　下载数据集　　
+## How to Run  如何运行
+### Download the Dataset  下载数据集　　
 To Download DuReader dataset:  
 要下载数据集：
 
@@ -31,8 +28,7 @@ cd data && bash download.sh
 For more details about DuReader dataset please refer to [DuReader Homepage](https://ai.baidu.com//broad/subordinate?dataset=dureader).  
 如果想了解关于DuReader数据集更多的细节，请参考[DuReader Homepage](https://ai.baidu.com//broad/subordinate?dataset=dureader)。  
 
-### Download Thirdparty Dependencies  
-### 下载第三方依赖库  
+### Download Thirdparty Dependencies 下载第三方依赖库  
 We use Bleu and Rouge as evaluation metrics, the calculation of these metrics relies on the scoring scripts under "https://github.com/tylin/coco-caption", to download them, run:  
 我们使用Blue和Rouge作为评估指标，这些指标的计算依赖于"https://github.com/tylin/cococaption" 。下载他们之后，然后运行：  
 
@@ -40,8 +36,7 @@ We use Bleu and Rouge as evaluation metrics, the calculation of these metrics re
 cd utils && bash download_thirdparty.sh
 ```
 
-### Preprocess the Data  
-### 预处理数据  
+### Preprocess the Data 预处理数据  
 After the dataset is downloaded, there is still some work to do to run the baseline systems. DuReader dataset offers rich amount of documents for every user question, the documents are too long for popular RC models to cope with. In our baseline models, we preprocess the train set and development set data by selecting the paragraph that is most related to the answer string, while for inferring(no available golden answer), we select the paragraph that is most related to the question string. The preprocessing strategy is implemented in `utils/preprocess.py`. To preprocess the raw data, you should first segment 'question', 'title', 'paragraphs' and then store the segemented result into 'segmented_question', 'segmented_title', 'segmented_paragraphs' like the downloaded preprocessed data, then run:  
 下载数据集之后，仍然要做一些准备工作才能运行基线系统。DuReader数据集为每个用户的问题提供了丰富的documents，但是这些documents过长，对流行的
 RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由*'utils/preprocess.py'*实现。为了预处理原始数据，你应该先切割*'question'*、*'title'*、*'paragraphs'*字符串，并把切割后的结果存储在*'segemented_question'*、*'segemented_title'*、*'segemented_paragraphs'*，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句：  
