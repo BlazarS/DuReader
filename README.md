@@ -41,7 +41,7 @@ After the dataset is downloaded, there is still some work to do to run the basel
 下载数据集之后，仍然要做一些准备工作才能运行基线系统。DuReader数据集为每个用户的问题提供了丰富的documents，但是这些documents过长，对流行的
 RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**utils/preprocess.py**实现。为了预处理原始数据，你应该先切割**question**、**title**、**paragraphs**字符串，并把切割后的结果存储在**segemented_question**、**segemented_title**、**segemented_paragraphs**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
 
-```
+```bash
 cat data/raw/trainset/search.train.json | python utils/preprocess.py > data/preprocessed/trainset/search.train.json
 ```
 The preprocessed data can be automatically downloaded by `data/download.sh`, and is stored in `data/preprocessed`, the raw data before preprocessing is under `data/raw`.  
@@ -123,7 +123,7 @@ The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and ev
 To do inference (on the demo testset) by using a trained model, please run: 
 要用已经训练好的模型进行推理，请运行以下命令：  
 ```
-sh run.sh --predict  --load_dir YOUR_MODEL_DIR 
+sh run.sh --predict  --load_dir YOUR_MODEL_DIR
 ```
 The predicted answers will be saved in the folder `data/results`.
 推理的答案将会保存在文件夹**data/results**下。  
