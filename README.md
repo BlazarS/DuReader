@@ -18,7 +18,7 @@ DuReader system implements 2 classic reading comprehension models([BiDAF](https:
 DuReader系统在【DuReader数据集】的基础上实现了2个经典阅读理解模型【BiDAF】和【Match-LSTM】。该系统通过两个框架实现：Paddlepaddle和TensorFlow。  
 
 ## How to Run  如何运行
-### Download the Dataset  下载数据集　　
+### Download the Dataset  下载数据集  
 To Download DuReader dataset:  
 要下载数据集：
 
