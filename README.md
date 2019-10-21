@@ -39,7 +39,7 @@ cd utils && bash download_thirdparty.sh
 ### Preprocess the Data 预处理数据  
 After the dataset is downloaded, there is still some work to do to run the baseline systems. DuReader dataset offers rich amount of documents for every user question, the documents are too long for popular RC models to cope with. In our baseline models, we preprocess the train set and development set data by selecting the paragraph that is most related to the answer string, while for inferring(no available golden answer), we select the paragraph that is most related to the question string. The preprocessing strategy is implemented in `utils/preprocess.py`. To preprocess the raw data, you should first segment 'question', 'title', 'paragraphs' and then store the segemented result into 'segmented_question', 'segmented_title', 'segmented_paragraphs' like the downloaded preprocessed data, then run:  
 下载数据集之后，仍然要做一些准备工作才能运行基线系统。DuReader数据集为每个用户的问题提供了丰富的documents，但是这些documents过长，对流行的
-RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推断（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**utils/preprocess.py**实现。为了预处理原始数据，你应该先切割**question**、**title**、**paragraphs**字符串，并把切割后的结果存储在**segemented_question**、**segemented_title**、**segemented_paragraphs**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
+RC模型来讲难以处理。在我们的基线模型中，我们通过选择与答案最相关的段落来预处理训练集和开发集数据，而对于推理（没有可用的黄金答案），我们选择与问题最相关的段落。预处理的策略由**utils/preprocess.py**实现。为了预处理原始数据，你应该先切割**question**、**title**、**paragraphs**字符串，并把切割后的结果存储在**segemented_question**、**segemented_title**、**segemented_paragraphs**，结果就像已经下载的preprocessed文件夹中的数据一样。切割完字符串之后，然后要运行语句： 
 
 ```bash
 cat data/raw/trainset/search.train.json | python utils/preprocess.py > data/preprocessed/trainset/search.train.json
@@ -72,7 +72,7 @@ Please note that we only tested the baseline on PaddlePaddle v1.2 (Fluid) with P
 We incorporate a new strategy of paragraph extraction to improve the model performance. The details have been noted in `paddle/UPDATES.md`. Please run the following command to apply the new strategy of paragraph extraction on each document:
 我们采用了段落提取的新策略，以提高模型性能。详情已在**paddle/UPDATES.md**中注明。请运行以下命令，以便在每个文档上应用段落提取的新策略：  
 
-```
+```bash
 sh run.sh --para_extraction
 ```
 
@@ -103,6 +103,7 @@ sh run.sh --train --pass_num 5
 ```
 This will start the training process with 5 epochs. The trained model will be evaluated automatically after each epoch, and a folder named by the epoch ID will be created under the folder `data/models`, in which the model parameters are saved. If you need to change the default hyper-parameters, e.g. initial learning rate and hidden size, please run the commands with the specific arguments.   
 这个命令会执行5次训练过程。每次训练完成之后将自动评估定型模型，并在保存模型参数的文件夹*data/model*下创建由epoch ID命令的文件夹。如果需要更改默认超参数(例如初始学习速率和隐藏大小),请使用特定参数运行命令。  
+
 ```
 sh run.sh --train --pass_num 5 --learning_rate 0.00001 --hidden_size 100
 ```
@@ -113,6 +114,7 @@ More arguments can be found in `paddle/args.py`.
 #### Evaluate 评估  
 To evaluate a specific model (on the demo devset), please run the following command:
 要评估特定模型（在demo数据集上），请运行下列命令：  
+
 ```
 sh run.sh --evaluate  --load_dir YOUR_MODEL_DIR
 ```
@@ -122,11 +124,13 @@ The model under `YOUR_MODEL_DIR` (e.g. `../data/models/1`) will be loaded and ev
 #### Inference (Prediction) 推理（预测）
 To do inference (on the demo testset) by using a trained model, please run: 
 要用已经训练好的模型进行推理，请运行以下命令：  
+
 ```
 sh run.sh --predict  --load_dir YOUR_MODEL_DIR
 ```
 The predicted answers will be saved in the folder `data/results`.
 推理的答案将会保存在文件夹**data/results**下。  
+
 #### The performance of PaddlePaddle Baseline on DuReader 2.0 在DuReader 2.0上PaddlePaddle基线系统的表现  
 |      Model     | Dev ROUGE-L | Test ROUGE-L |
 | :------------- | :---------: | :----------: |
