@@ -9,15 +9,15 @@
 #### --predict  
 执行predict过程的参数，用已经训练好的模型推断测试机的答案  
 #### embed_size  
-嵌入表的维度，数据类型是**int**,默认是300。  
+嵌入表的维度，数据类型是**int**,默认是300。  只在--prepare出现。
 #### --hidden_size  
-运行隐藏单位的大小，数据类型是**int**，默认是300  
+运行隐藏单位的大小，数据类型是**int**，默认是300  。在train,evaluate,predict中出现。
 #### --learning_rate  
-学习率的大小，类型是**float**，默认是0.001  
+学习率的大小，类型是**float**，默认是0.001  只在--train中出现。
 #### --optim  
-优化器类型，类型是**string**，默认是'adam'  
+优化器类型，类型是**string**，默认是'adam'  。只在--train中出现。
 #### --weight_decay  
-权重衰减，类型是**float**，默认是0.0001  
+权重衰减，类型是**float**，默认是0.0001  。只在--train中出现。
 #### --drop_rate  
 类型是**float**，默认是0.0  
 #### --random_seed  
@@ -31,19 +31,19 @@ mini_batch批处理数据的数据号，类型是**int**，默认是32
 #### --log_interval  
 记录每n批数据的训练损失，类型是**int**，默认是50  
 #### --max_p_num  
-类型是**int**,默认是5  
+类型是**int**,默认是5  。--prepare --train --evaluate --predict都用到了这一参数  
 #### --max_a_len  
-类型是**int**,默认是200  
+类型是**int**,默认是200  。--prepare --train --evaluate --predict都用到了这一参数  
 #### --max_p_len  
-类型是**int**,默认是500  
+类型是**int**,默认是500  。--prepare --train --evaluate --predict都用到了这一参数
 #### --max_q_len  
-类型是**int**,默认是60  
+类型是**int**,默认是60  。--prepare --train --evaluate --predict都用到了这一参数
 #### --doc_num  
-类型是**int**,默认是5  
+类型是**int**,默认是5  。run.py无这一参数。
 #### --vocab_dir  
 词汇表的存储位置，默认是../data/vovab  
 #### --save_dir  
-模型保存的位置，默认是../data/models  
+模型保存的文件夹，默认是../data/models  
 #### save_interval  
 保存间隔，每n passes保存训练的模型，类型是**int**,默认是1  
 #### --load_dir  
@@ -54,7 +54,7 @@ mini_batch批处理数据的数据号，类型是**int**，默认是32
 结果文件夹，默认值是../data/results/  
 #### result_name  
 保存的结果的文件的名称，默认值是test_result  
-#### --trainset  
+#### --trainset 
 加载train数据集文件，默认是../data/demo/trainset/search.train.json，默认值表示使用demo文件夹中的train数据集  
 #### --devset  
 加载dev数据集文件，默认是../data/demo/devset/search.dev.json，默认值表示使用demo文件夹中的dev数据集  
